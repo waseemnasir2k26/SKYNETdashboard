@@ -19,7 +19,7 @@ import { GROWTH_PLAN } from '../data/growthPlan';
 export default function Points() {
   const {
     points,
-    badges,
+    earnedBadges,
     streak,
     getCurrentLevel,
     getOverallProgress,
@@ -42,8 +42,8 @@ export default function Points() {
     streakBonus: streak.current * 5,
   };
 
-  const earnedBadges = GROWTH_PLAN.badges.filter(b => badges.includes(b.id));
-  const lockedBadges = GROWTH_PLAN.badges.filter(b => !badges.includes(b.id));
+  const earnedBadgesList = GROWTH_PLAN.badges.filter(b => earnedBadges.includes(b.id));
+  const lockedBadges = GROWTH_PLAN.badges.filter(b => !earnedBadges.includes(b.id));
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Star },
@@ -88,7 +88,7 @@ export default function Points() {
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-accent-warning mb-1">
-              {earnedBadges.length}
+              {earnedBadgesList.length}
             </div>
             <div className="text-sm text-gray-500">Badges Earned</div>
           </div>
@@ -265,7 +265,7 @@ export default function Points() {
                             <CheckCircle2 className="w-4 h-4 text-accent-success" />
                           )}
                         </div>
-                        <p className="text-sm text-gray-500 mb-2">{level.description}</p>
+                        <p className="text-sm text-gray-500 mb-2">Reach {level.minPoints.toLocaleString()} points</p>
                         <div className="flex items-center gap-4">
                           <div className="flex-1 h-2 bg-dark-input rounded-full overflow-hidden">
                             <motion.div
@@ -305,11 +305,11 @@ export default function Points() {
             <div className="card">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-accent-warning" />
-                Earned Badges ({earnedBadges.length}/{GROWTH_PLAN.badges.length})
+                Earned Badges ({earnedBadgesList.length}/{GROWTH_PLAN.badges.length})
               </h2>
-              {earnedBadges.length > 0 ? (
+              {earnedBadgesList.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {earnedBadges.map((badge, index) => (
+                  {earnedBadgesList.map((badge, index) => (
                     <motion.div
                       key={badge.id}
                       initial={{ opacity: 0, scale: 0.8 }}

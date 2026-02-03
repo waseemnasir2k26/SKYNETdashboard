@@ -6,25 +6,11 @@ import {
   CheckCircle2,
   Zap,
   Target,
-  Clock,
-  FileText,
-  Video,
-  Mic,
-  Mail,
-  BookOpen
+  FileText
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { GROWTH_PLAN, CATEGORY_COLORS, PRIORITY_COLORS } from '../data/growthPlan';
 import toast from 'react-hot-toast';
-
-const contentIcons = {
-  blog: BookOpen,
-  video: Video,
-  carousel: FileText,
-  reel: Video,
-  newsletter: Mail,
-  podcast: Mic
-};
 
 export default function Weekly() {
   const {
@@ -50,9 +36,9 @@ export default function Weekly() {
   };
 
   const handleContentToggle = (content) => {
-    toggleWeeklyContent(content.id, content.points, selectedWeek);
-    const contentKey = `${selectedWeek}-${content.id}`;
-    if (!weeklyContent[contentKey]) {
+    toggleWeeklyContent(content.id, selectedWeek, content.points);
+    const weekKey = `week_${selectedWeek}`;
+    if (!weeklyContent[weekKey]?.[content.id]) {
       toast.success(`+${content.points} points! Content published!`, { icon: '📝' });
     }
   };
@@ -227,10 +213,9 @@ export default function Weekly() {
           </div>
 
           <div className="space-y-3">
-            {GROWTH_PLAN.weeklyContentTasks.map((content, index) => {
-              const contentKey = `${selectedWeek}-${content.id}`;
-              const isCompleted = weeklyContent[contentKey];
-              const Icon = contentIcons[content.type] || FileText;
+            {GROWTH_PLAN.weeklyContent.map((content, index) => {
+              const weekKey = `week_${selectedWeek}`;
+              const isCompleted = weeklyContent[weekKey]?.[content.id];
 
               return (
                 <motion.div
@@ -248,7 +233,7 @@ export default function Weekly() {
                   whileTap={{ scale: 0.99 }}
                 >
                   <div className={`p-3 rounded-xl ${isCompleted ? 'bg-accent-success/20' : 'bg-purple-500/20'}`}>
-                    <Icon className={`w-5 h-5 ${isCompleted ? 'text-accent-success' : 'text-purple-400'}`} />
+                    <span className="text-xl">{content.icon}</span>
                   </div>
 
                   <div className="flex-1">
@@ -256,9 +241,9 @@ export default function Weekly() {
                       {content.title}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500 capitalize">{content.type}</span>
+                      <span className="text-xs text-gray-500">{content.day}</span>
                       <span className="text-xs text-gray-600">|</span>
-                      <span className="text-xs text-gray-500">{content.frequency}</span>
+                      <span className="text-xs text-gray-500">{content.points} pts</span>
                     </div>
                   </div>
 
