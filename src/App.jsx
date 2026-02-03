@@ -13,10 +13,13 @@ import KPIs from './pages/KPIs';
 import Calendar from './pages/Calendar';
 import Points from './pages/Points';
 import Settings from './pages/Settings';
+import Documentation from './pages/Documentation';
+import Auth from './pages/Auth';
 import FocusMode from './components/FocusMode';
 
 // Store
 import { useStore } from './store/useStore';
+import { useAuthStore } from './store/useAuthStore';
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -26,6 +29,7 @@ const pageVariants = {
 
 function App() {
   const { activeTab, focusMode, earnedBadges } = useStore();
+  const { isAuthenticated } = useAuthStore();
   const [showConfetti, setShowConfetti] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
@@ -68,10 +72,32 @@ function App() {
         return <Points />;
       case 'settings':
         return <Settings />;
+      case 'docs':
+        return <Documentation />;
       default:
         return <Dashboard />;
     }
   };
+
+  // Show auth page if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#242424',
+              color: '#fff',
+              border: '1px solid #333',
+              borderRadius: '12px',
+            },
+          }}
+        />
+        <Auth />
+      </>
+    );
+  }
 
   if (focusMode) {
     return <FocusMode />;

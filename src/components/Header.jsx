@@ -11,6 +11,7 @@ import {
   Command
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { GROWTH_PLAN } from '../data/growthPlan';
 
 export default function Header({ onMenuClick }) {
@@ -22,9 +23,19 @@ export default function Header({ onMenuClick }) {
     points
   } = useStore();
 
+  const { currentUser } = useAuthStore();
+
   const [showSearch, setShowSearch] = useState(false);
   const [quote, setQuote] = useState(GROWTH_PLAN.quotes[0]);
   const [time, setTime] = useState(new Date());
+
+  // Get user's first name for greeting
+  const userName = currentUser?.name?.split(' ')[0] || GROWTH_PLAN.meta.owner.split(' ')[0];
+
+  // Get user's initials for avatar
+  const userInitials = currentUser?.name
+    ? currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'U';
 
   const currentWeek = getCurrentWeek();
   const currentPhase = getCurrentPhase();
@@ -81,7 +92,7 @@ export default function Header({ onMenuClick }) {
 
           <div className="hidden md:block">
             <h2 className="text-lg font-semibold">
-              {getGreeting()}, {GROWTH_PLAN.meta.owner.split(' ')[0]}! 👋
+              {getGreeting()}, {userName}! 👋
             </h2>
             <p className="text-sm text-gray-500 max-w-md truncate">
               "{quote.text}"
@@ -176,8 +187,9 @@ export default function Header({ onMenuClick }) {
             className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-primary to-purple-600 flex items-center justify-center cursor-pointer"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            title={currentUser?.name || 'User'}
           >
-            <span className="text-sm font-bold">WN</span>
+            <span className="text-sm font-bold">{userInitials}</span>
           </motion.div>
         </div>
       </div>

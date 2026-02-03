@@ -11,10 +11,15 @@ import {
   X,
   Rocket,
   Zap,
-  Target
+  Target,
+  BookOpen,
+  LogOut,
+  User
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useAuthStore, saveCurrentUserData } from '../store/useAuthStore';
 import { GROWTH_PLAN } from '../data/growthPlan';
+import toast from 'react-hot-toast';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -23,6 +28,7 @@ const navItems = [
   { id: 'kpis', label: 'KPIs', icon: BarChart3 },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
   { id: 'points', label: 'Points', icon: Trophy },
+  { id: 'docs', label: 'Guide', icon: BookOpen },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -36,8 +42,16 @@ export default function Sidebar({ onClose }) {
     getOverallProgress
   } = useStore();
 
+  const { currentUser, logout } = useAuthStore();
+
   const currentLevel = getCurrentLevel();
   const overallProgress = getOverallProgress();
+
+  const handleLogout = () => {
+    saveCurrentUserData();
+    logout();
+    toast.success('Logged out successfully!', { icon: '👋' });
+  };
 
   const handleNavClick = (tabId) => {
     setActiveTab(tabId);
@@ -174,9 +188,29 @@ export default function Sidebar({ onClose }) {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* User Profile & Logout */}
       <div className="p-4 border-t border-dark-border">
-        <p className="text-xs text-gray-500 text-center">
+        {currentUser && (
+          <div className="flex items-center gap-3 mb-3 p-3 bg-dark-card rounded-xl border border-dark-border">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-purple-600 flex items-center justify-center text-white font-semibold">
+              {currentUser.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-sm truncate">{currentUser.name}</p>
+              <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
+            </div>
+          </div>
+        )}
+        <motion.button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-dark-input hover:bg-accent-danger/20 text-gray-400 hover:text-accent-danger rounded-xl text-sm font-medium transition-all"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <LogOut className="w-4 h-4" />
+          Sign Out
+        </motion.button>
+        <p className="text-xs text-gray-500 text-center mt-3">
           Built for {GROWTH_PLAN.meta.agencyName}
         </p>
       </div>
