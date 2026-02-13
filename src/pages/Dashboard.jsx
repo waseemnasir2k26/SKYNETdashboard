@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { GROWTH_PLAN, CATEGORY_COLORS, PRIORITY_COLORS } from '../data/growthPlan';
+import GoalPainPoint from '../components/GoalPainPoint';
 import toast from 'react-hot-toast';
 
 const containerVariants = {
@@ -154,6 +155,11 @@ export default function Dashboard() {
         </div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-1/2 w-64 h-64 bg-accent-success/10 rounded-full blur-3xl" />
+      </motion.div>
+
+      {/* Goal Pain Point Widget */}
+      <motion.div variants={itemVariants}>
+        <GoalPainPoint />
       </motion.div>
 
       {/* Stats Grid */}

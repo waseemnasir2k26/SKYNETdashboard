@@ -40,7 +40,9 @@ export const useAuthStore = create(
           createdAt: new Date().toISOString(),
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`,
           // User-specific data store key
-          dataKey: `skynetjoe-dashboard-${normalizedEmail}`
+          dataKey: `skynetjoe-dashboard-${normalizedEmail}`,
+          // Goal onboarding flag - new users need to complete goal setup
+          onboardingComplete: false
         };
 
         set((state) => ({
@@ -106,6 +108,30 @@ export const useAuthStore = create(
         }));
 
         return { success: true };
+      },
+
+      // Mark onboarding as complete
+      markOnboardingComplete: () => {
+        const state = get();
+        if (!state.currentUser) return { success: false, error: 'Not logged in' };
+
+        const updatedUser = { ...state.currentUser, onboardingComplete: true };
+
+        set((state) => ({
+          currentUser: updatedUser,
+          users: {
+            ...state.users,
+            [state.currentUser.email]: updatedUser
+          }
+        }));
+
+        return { success: true };
+      },
+
+      // Check if user needs onboarding
+      needsOnboarding: () => {
+        const state = get();
+        return state.isAuthenticated && state.currentUser && !state.currentUser.onboardingComplete;
       },
 
       // Change password

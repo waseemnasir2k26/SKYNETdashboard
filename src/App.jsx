@@ -16,10 +16,13 @@ import Settings from './pages/Settings';
 import Documentation from './pages/Documentation';
 import Auth from './pages/Auth';
 import FocusMode from './components/FocusMode';
+import GoalOnboarding from './components/GoalOnboarding';
+import Goals from './pages/Goals';
 
 // Store
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
+import { useGoalsStore } from './store/useGoalsStore';
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -29,7 +32,22 @@ const pageVariants = {
 
 function App() {
   const { activeTab, focusMode, earnedBadges } = useStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, currentUser, needsOnboarding } = useAuthStore();
+  const { onboardingComplete, initializeAdminGoals } = useGoalsStore();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if user needs onboarding after authentication
+  useEffect(() => {
+    if (isAuthenticated && currentUser) {
+      // Initialize admin goals for Wasim's account
+      const isAdmin = initializeAdminGoals(currentUser.email);
+
+      // Show onboarding for non-admin users who haven't completed it
+      if (!isAdmin && !onboardingComplete && !currentUser.onboardingComplete) {
+        setShowOnboarding(true);
+      }
+    }
+  }, [isAuthenticated, currentUser, onboardingComplete]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
@@ -70,6 +88,8 @@ function App() {
         return <Calendar />;
       case 'points':
         return <Points />;
+      case 'goals':
+        return <Goals />;
       case 'settings':
         return <Settings />;
       case 'docs':
@@ -77,6 +97,11 @@ function App() {
       default:
         return <Dashboard />;
     }
+  };
+
+  // Handle onboarding completion
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
   };
 
   // Show auth page if not authenticated
@@ -101,6 +126,26 @@ function App() {
 
   if (focusMode) {
     return <FocusMode />;
+  }
+
+  // Show onboarding wizard for new users
+  if (showOnboarding) {
+    return (
+      <>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#242424',
+              color: '#fff',
+              border: '1px solid #333',
+              borderRadius: '12px',
+            },
+          }}
+        />
+        <GoalOnboarding onComplete={handleOnboardingComplete} />
+      </>
+    );
   }
 
   return (

@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'goals', label: 'Goals', icon: Target },
   { id: 'tasks', label: 'Tasks', icon: CheckSquare },
   { id: 'weekly', label: 'Weekly', icon: Calendar },
   { id: 'kpis', label: 'KPIs', icon: BarChart3 },
