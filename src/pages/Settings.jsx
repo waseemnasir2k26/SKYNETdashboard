@@ -16,9 +16,11 @@ import {
   ExternalLink,
   Check,
   AlertTriangle,
-  Database
+  Database,
+  Palette
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useThemeStore, THEMES } from '../store/useThemeStore';
 import { GROWTH_PLAN } from '../data/growthPlan';
 import toast from 'react-hot-toast';
 
@@ -34,9 +36,10 @@ export default function Settings() {
     getCurrentMonth
   } = useStore();
 
+  const { theme, setTheme } = useThemeStore();
+
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
   const [startDate, setStartDate] = useState(localStorage.getItem('startDate') || new Date().toISOString().split('T')[0]);
   const fileInputRef = useRef(null);
 
@@ -148,18 +151,18 @@ export default function Settings() {
           value: notifications,
           onChange: () => setNotifications(!notifications),
           type: 'toggle'
-        },
+        }
+      ]
+    },
+    {
+      title: 'Appearance',
+      icon: Palette,
+      items: [
         {
-          id: 'darkMode',
-          label: 'Dark Mode',
-          description: 'Toggle between light and dark theme',
-          icon: darkMode ? Moon : Sun,
-          value: darkMode,
-          onChange: () => {
-            setDarkMode(!darkMode);
-            toast('Theme switching coming soon!', { icon: '🎨' });
-          },
-          type: 'toggle'
+          id: 'theme',
+          label: 'Theme',
+          description: 'Choose your preferred color theme',
+          type: 'theme-selector'
         }
       ]
     }
@@ -223,7 +226,7 @@ export default function Settings() {
               {section.title}
             </h2>
             <div className="space-y-3">
-              {section.items.map((item) => {
+              {section.items.filter(item => item.type !== 'theme-selector').map((item) => {
                 const ItemIcon = item.icon;
                 return (
                   <div
@@ -297,6 +300,35 @@ export default function Settings() {
                   </div>
                 );
               })}
+
+              {/* Theme Selector - Special Rendering */}
+              {section.items.some(item => item.type === 'theme-selector') && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                  {Object.values(THEMES).map((themeOption) => (
+                    <motion.button
+                      key={themeOption.id}
+                      onClick={() => {
+                        setTheme(themeOption.id);
+                        toast.success(`${themeOption.name} theme applied!`, { icon: themeOption.icon });
+                      }}
+                      className={`theme-option ${theme === themeOption.id ? 'active' : ''}`}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <span className="text-2xl">{themeOption.icon}</span>
+                      <div className="flex-1 text-left">
+                        <p className="font-medium">{themeOption.name}</p>
+                        <p className="text-xs text-gray-500">{themeOption.description}</p>
+                      </div>
+                      {theme === themeOption.id && (
+                        <div className="w-6 h-6 bg-accent-primary rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </motion.button>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         );

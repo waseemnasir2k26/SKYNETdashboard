@@ -2,13 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   THEME DEFINITIONS
+   ============================================ */
+
+/* Dark Theme (Default) */
+:root,
+[data-theme="dark"] {
+  --color-bg-primary: #0f0f0f;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-card: #242424;
+  --color-bg-input: #2d2d2d;
+  --color-border: #333333;
+  --color-border-light: #404040;
+  --color-text: #ffffff;
+  --color-text-secondary: #e5e5e5;
+  --color-text-muted: #9ca3af;
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --scrollbar-bg: #1a1a1a;
+  --scrollbar-thumb: #404040;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-input: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-border-light: #cbd5e1;
+  --color-text: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --scrollbar-bg: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+}
+
+/* Mixed Theme (Dark sidebar, Light content) */
+[data-theme="mixed"] {
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-card: #ffffff;
+  --color-bg-input: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-border-light: #cbd5e1;
+  --color-text: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --scrollbar-bg: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+}
+
 @layer base {
   * {
     @apply border-dark-border;
   }
 
   body {
-    @apply bg-dark-primary text-white font-sans antialiased;
+    background-color: var(--color-bg-primary);
+    color: var(--color-text);
+    @apply font-sans antialiased transition-colors duration-300;
+  }
+
+  /* Theme-aware text colors */
+  [data-theme="light"] .text-white,
+  [data-theme="mixed"] .text-white:not([data-keep-white]) {
+    color: var(--color-text);
+  }
+
+  [data-theme="light"] .text-gray-400,
+  [data-theme="mixed"] .text-gray-400 {
+    color: var(--color-text-muted);
+  }
+
+  [data-theme="light"] .text-gray-500,
+  [data-theme="mixed"] .text-gray-500 {
+    color: var(--color-text-muted);
+  }
+
+  [data-theme="light"] .text-gray-300,
+  [data-theme="mixed"] .text-gray-300 {
+    color: var(--color-text-secondary);
   }
 
   ::-webkit-scrollbar {
@@ -16,11 +92,12 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-dark-secondary;
+    background-color: var(--scrollbar-bg);
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-dark-border-light rounded-full;
+    background-color: var(--scrollbar-thumb);
+    @apply rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -56,7 +133,7 @@
   .btn-primary {
     @apply px-6 py-3 bg-gradient-to-r from-accent-primary to-purple-600 rounded-xl font-semibold
            transition-all duration-300 hover:shadow-lg hover:shadow-accent-primary/50 hover:scale-105
-           active:scale-95;
+           active:scale-95 text-white;
   }
 
   .btn-secondary {
@@ -69,7 +146,9 @@
   }
 
   .card {
-    @apply bg-dark-card border border-dark-border rounded-2xl p-6 transition-all duration-300;
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply border rounded-2xl p-6 transition-all duration-300;
   }
 
   .card-hover {
@@ -77,7 +156,10 @@
   }
 
   .input {
-    @apply w-full px-4 py-3 bg-dark-input border border-dark-border rounded-xl
+    background-color: var(--color-bg-input);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    @apply w-full px-4 py-3 border rounded-xl
            focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20
            transition-all duration-200 placeholder:text-gray-500;
   }
@@ -87,7 +169,8 @@
   }
 
   .progress-bar {
-    @apply h-2 bg-dark-input rounded-full overflow-hidden;
+    background-color: var(--color-bg-input);
+    @apply h-2 rounded-full overflow-hidden;
   }
 
   .progress-fill {
@@ -104,17 +187,27 @@
   }
 
   .stat-card {
-    @apply bg-dark-card border border-dark-border rounded-2xl p-6
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply border rounded-2xl p-6
            transition-all duration-300 hover:border-accent-primary/50 hover:shadow-lg hover:shadow-accent-primary/10;
   }
 
   .task-item {
-    @apply flex items-start gap-4 p-4 bg-dark-secondary border border-dark-border rounded-xl
-           transition-all duration-300 cursor-pointer hover:border-accent-primary hover:bg-dark-card;
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-border);
+    @apply flex items-start gap-4 p-4 border rounded-xl
+           transition-all duration-300 cursor-pointer hover:border-accent-primary;
+  }
+
+  [data-theme="light"] .task-item,
+  [data-theme="mixed"] .task-item {
+    background-color: var(--color-bg-input);
   }
 
   .task-checkbox {
-    @apply w-6 h-6 rounded-lg border-2 border-dark-border-light flex items-center justify-center
+    border-color: var(--color-border-light);
+    @apply w-6 h-6 rounded-lg border-2 flex items-center justify-center
            transition-all duration-200 cursor-pointer hover:border-accent-primary;
   }
 
@@ -123,7 +216,9 @@
   }
 
   .phase-card {
-    @apply flex-1 min-w-[180px] p-4 bg-dark-card border border-dark-border rounded-xl
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply flex-1 min-w-[180px] p-4 border rounded-xl
            transition-all duration-300 cursor-pointer hover:border-accent-primary;
   }
 
@@ -136,7 +231,9 @@
   }
 
   .week-btn {
-    @apply px-4 py-2 rounded-lg border border-dark-border bg-dark-card text-gray-400 text-sm font-medium
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply px-4 py-2 rounded-lg border text-gray-400 text-sm font-medium
            transition-all duration-200 hover:border-accent-primary hover:text-white;
   }
 
@@ -149,11 +246,15 @@
   }
 
   .kpi-card {
-    @apply bg-dark-card border border-dark-border rounded-2xl p-6;
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply border rounded-2xl p-6;
   }
 
   .badge-card {
-    @apply bg-dark-card border border-dark-border rounded-2xl p-6 text-center
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply border rounded-2xl p-6 text-center
            transition-all duration-300;
   }
 
@@ -166,25 +267,52 @@
   }
 
   .tooltip {
-    @apply absolute z-50 px-3 py-2 text-sm bg-dark-secondary border border-dark-border rounded-lg
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-border);
+    @apply absolute z-50 px-3 py-2 text-sm border rounded-lg
            shadow-xl pointer-events-none whitespace-nowrap;
   }
 
   .modal-overlay {
-    @apply fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+    background-color: var(--color-overlay);
+    @apply fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4;
   }
 
   .modal {
-    @apply bg-dark-card border border-dark-border rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply border rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
   }
 
   .dropdown {
-    @apply absolute top-full left-0 mt-2 w-full bg-dark-card border border-dark-border rounded-xl
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    @apply absolute top-full left-0 mt-2 w-full border rounded-xl
            shadow-xl overflow-hidden z-50;
   }
 
   .dropdown-item {
     @apply px-4 py-3 transition-all duration-200 hover:bg-white/5 cursor-pointer;
+  }
+
+  [data-theme="light"] .dropdown-item:hover,
+  [data-theme="mixed"] .dropdown-item:hover {
+    @apply bg-black/5;
+  }
+
+  /* Theme selector styles */
+  .theme-option {
+    background-color: var(--color-bg-input);
+    border-color: var(--color-border);
+    @apply flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all duration-200;
+  }
+
+  .theme-option:hover {
+    @apply border-accent-primary/50;
+  }
+
+  .theme-option.active {
+    @apply border-accent-primary bg-accent-primary/10;
   }
 }
 
@@ -216,5 +344,31 @@
   .mask-gradient {
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  /* Sidebar stays dark in mixed theme */
+  [data-theme="mixed"] aside {
+    --color-bg-secondary: #1a1a1a;
+    --color-bg-card: #242424;
+    --color-bg-input: #2d2d2d;
+    --color-border: #333333;
+    --color-border-light: #404040;
+    --color-text: #ffffff;
+    --color-text-secondary: #e5e5e5;
+    --color-text-muted: #9ca3af;
+    background-color: #1a1a1a;
+  }
+
+  [data-theme="mixed"] aside * {
+    color: inherit;
+  }
+
+  [data-theme="mixed"] aside .text-white {
+    color: #ffffff !important;
+  }
+
+  [data-theme="mixed"] aside .text-gray-400,
+  [data-theme="mixed"] aside .text-gray-500 {
+    color: #9ca3af !important;
   }
 }

@@ -23,6 +23,7 @@ import Goals from './pages/Goals';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useGoalsStore } from './store/useGoalsStore';
+import { useThemeStore } from './store/useThemeStore';
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -34,7 +35,13 @@ function App() {
   const { activeTab, focusMode, earnedBadges } = useStore();
   const { isAuthenticated, currentUser, needsOnboarding } = useAuthStore();
   const { onboardingComplete, initializeAdminGoals } = useGoalsStore();
+  const { initTheme } = useThemeStore();
   const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Initialize theme on app load
+  useEffect(() => {
+    initTheme();
+  }, []);
 
   // Check if user needs onboarding after authentication
   useEffect(() => {

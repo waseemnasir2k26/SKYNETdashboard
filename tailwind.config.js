@@ -9,12 +9,12 @@ export default {
     extend: {
       colors: {
         dark: {
-          primary: '#0f0f0f',
-          secondary: '#1a1a1a',
-          card: '#242424',
-          input: '#2d2d2d',
-          border: '#333333',
-          'border-light': '#404040',
+          primary: 'var(--color-bg-primary)',
+          secondary: 'var(--color-bg-secondary)',
+          card: 'var(--color-bg-card)',
+          input: 'var(--color-bg-input)',
+          border: 'var(--color-border)',
+          'border-light': 'var(--color-border-light)',
         },
         accent: {
           primary: '#6366f1',
@@ -30,6 +30,12 @@ export default {
           content: '#06b6d4',
           operations: '#10b981',
           delivery: '#6366f1',
+        },
+        // Theme-aware text colors
+        theme: {
+          text: 'var(--color-text)',
+          'text-secondary': 'var(--color-text-secondary)',
+          'text-muted': 'var(--color-text-muted)',
         }
       },
       fontFamily: {
