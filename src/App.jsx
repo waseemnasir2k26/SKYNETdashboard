@@ -18,6 +18,12 @@ import Auth from './pages/Auth';
 import FocusMode from './components/FocusMode';
 import GoalOnboarding from './components/GoalOnboarding';
 import Goals from './pages/Goals';
+// Social Media Pages
+import SocialCalendar from './pages/SocialCalendar';
+import ContentLibrary from './pages/ContentLibrary';
+import VideoScripts from './pages/VideoScripts';
+import ImageTemplates from './pages/ImageTemplates';
+import AIGeneratedPosts from './pages/AIGeneratedPosts';
 
 // Store
 import { useStore } from './store/useStore';
@@ -101,6 +107,17 @@ function App() {
         return <Settings />;
       case 'docs':
         return <Documentation />;
+      // Social Media Pages
+      case 'social-calendar':
+        return <SocialCalendar />;
+      case 'content-library':
+        return <ContentLibrary />;
+      case 'video-scripts':
+        return <VideoScripts />;
+      case 'image-templates':
+        return <ImageTemplates />;
+      case 'ai-posts':
+        return <AIGeneratedPosts />;
       default:
         return <Dashboard />;
     }

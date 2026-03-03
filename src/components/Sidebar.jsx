@@ -14,7 +14,12 @@ import {
   Target,
   BookOpen,
   LogOut,
-  User
+  User,
+  Share2,
+  Library,
+  Video,
+  Image,
+  Sparkles
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useAuthStore, saveCurrentUserData } from '../store/useAuthStore';
@@ -29,6 +34,14 @@ const navItems = [
   { id: 'kpis', label: 'KPIs', icon: BarChart3 },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
   { id: 'points', label: 'Points', icon: Trophy },
+  // Social Media Section
+  { id: 'divider-social', label: 'Social Media', isDivider: true },
+  { id: 'social-calendar', label: 'Content Calendar', icon: Share2 },
+  { id: 'content-library', label: 'Content Library', icon: Library },
+  { id: 'video-scripts', label: 'Video Scripts', icon: Video },
+  { id: 'image-templates', label: 'Image Templates', icon: Image },
+  { id: 'ai-posts', label: 'AI News Posts', icon: Sparkles },
+  // Other
   { id: 'docs', label: 'Guide', icon: BookOpen },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
@@ -145,6 +158,17 @@ export default function Sidebar({ onClose }) {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
+          // Handle dividers
+          if (item.isDivider) {
+            return (
+              <div key={item.id} className="pt-4 pb-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-3">
+                  {item.label}
+                </p>
+              </div>
+            );
+          }
+
           const Icon = item.icon;
           const isActive = activeTab === item.id;
 
